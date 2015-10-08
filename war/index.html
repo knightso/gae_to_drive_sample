@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<script src="./js/lib/angular.min.js"></script>
+		<script src="./js/app.js"></script>
+	</head>
+	<body ng-app="demo">
+		<section>
+			<h1>使い方</h1>
+			<p>1. 2. 3.の順に行って下さい。</p>
+		</section>
+		
+		<br>
+		
+		<section>
+			<h1>1. ファイルをアップロードするフォルダを作成</h1>
+			<section>
+				<h3>1-1. フォルダ作成</h3>
+				<p>作成後に表示されるIDをメモしておいて下さい。</p>
+				<form action="/files/insert/folder" method="post">
+					フォルダ名: <input type="text" name="title" required><br>
+					<input type="submit" value="作成">
+				</form>
+			</section>
+			<section>
+				<h2>1-2. フォルダの権限を更新</h2>
+				<form action="/permissions/insert" method="post">
+					フォルダID: <input type="text" name="fileId" required><br>
+					ドメイン名: <input type="text" name="domain" required><br>
+					<label for="role">権限: </label>
+					<select name="role" required>
+						<option value="owner">owner</option>
+						<option value="reader" selected>reader</option>
+						<option value="writer">writer</option>
+						<option value="commenter">commenter</option>
+					</select><br>
+					<input type="submit" value="更新">
+				</form>
+			</section>
+		</section>
+		
+		<section>
+			<h1>2. ファイルのアップロード</h1>
+			<section ng-controller="UploadController as ctrl">
+				<h3>2-1. GAEのBlobにアップロード</h3>
+				<p>取得ボタンを押すと、blobアップロード用のフォームが表示されます。</p>
+				<p>アップロードした後に表示されるBlobKeyをメモしておいて下さい。</p>
+				<div ng-hide="ctrl.uploadReady">
+					<button ng-click="ctrl.setUploadUrl()">取得</button>
+				</div>
+			
+				<form action="{{ctrl.uploadUrl}}" method="post" enctype="multipart/form-data" ng-show="ctrl.uploadReady">
+					ファイル: <input type="file" name="file"><br>
+					<input type="submit" value="アップロード">
+				</form>
+			</section>
+			<section>
+				<h3>2-2. GAEからGoogle Driveへアップロード</h3>
+				<p>アップロードした後に表示されるIDをメモしておいて下さい。</p>
+				<form action="/files/insert/file" method="post">
+					blobstore key: <input type="text" name="blobstoreKey"><br>
+					parentId(1-1で作成したフォルダのID): <input type="text" name="parentId"><br>
+					<input type="submit" value="アップロード">
+				</form>
+			</section>
+		</section>
+		
+		<section>
+			<h1>3. アップロードしたファイル情報の取得</h1>
+			<form action="/files/get" method="get">
+				fileId: <input type="text" name="fileId"><br>
+				<input type="submit" value="取得">
+			</form>
+		</section>
+		
+		<section>
+			<h1>その他</h1>
+			<section>
+				<h2>Fileの一覧取得</h2>
+				<form action="/files/list" method="get">
+					<input type="submit" value="取得">
+				</form>
+			</section>
+			
+			<section>
+				
+			</section>
+		</section>
+	</body>
+</html>
